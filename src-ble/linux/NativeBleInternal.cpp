@@ -134,6 +134,14 @@ void NativeBleInternal::indicate(BluetoothUUID service_uuid, BluetoothUUID chara
     }
 }
 
+void NativeBleInternal::unsubscribe(BluetoothUUID service_uuid, BluetoothUUID characteristic_uuid) {
+    if (device == nullptr) return;
+    auto characteristic = device->get_characteristic(service_uuid, characteristic_uuid);
+    if (characteristic != nullptr) {
+        characteristic->StopNotify();
+    }
+}
+
 void NativeBleInternal::disconnect() {
     if (device == nullptr) return;
     device->Disconnect();

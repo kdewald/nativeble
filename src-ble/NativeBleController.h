@@ -162,6 +162,16 @@ class NativeBleController {
                   std::function<void(const uint8_t *data, uint32_t length)> callback_on_indicate);
 
     /**
+     * NativeBleController::unsubscribe
+     *
+     * Disables notifications/indications for the provided service/characteristic pair.
+     *
+     * @param service: UUID of the BLE service
+     * @param characteristic: UUID of the characteristic on the service
+     */
+    void unsubscribe(BluetoothUUID service, BluetoothUUID characteristic);
+
+    /**
      * NativeBleController::disconnect
      *
      * Disconnects from BLE device

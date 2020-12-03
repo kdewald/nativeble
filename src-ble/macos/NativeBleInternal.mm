@@ -71,7 +71,7 @@ void NativeBleInternal::connect(const BluetoothAddress &address) {
     //Create a UUID object from std::string
     NSString *string = [[NSString alloc]initWithUTF8String:address.c_str()];
     NSUUID *uuid = [[NSUUID alloc]initWithUUIDString:string];
-    
+
     CBPeripheral *peripheral = [macable getPeripheralWithUUID:uuid];
     [macable setPeripheral:peripheral];
     [macable connect];
@@ -125,7 +125,7 @@ void NativeBleInternal::notify(BluetoothUUID service, BluetoothUUID characterist
                     std::function<void(const uint8_t *data, uint32_t length)> callback_on_notify) {
     NSString *serviceStr = [[NSString alloc]initWithUTF8String:service.c_str()];
     NSString *charStr = [[NSString alloc]initWithUTF8String:characteristic.c_str()];
-    
+
     CBUUID *service_uuid = [CBUUID UUIDWithString:serviceStr];
     CBUUID *characteristic_uuid = [CBUUID UUIDWithString:charStr];
 
@@ -139,7 +139,7 @@ void NativeBleInternal::indicate(BluetoothUUID service, BluetoothUUID characteri
                 std::function<void(const uint8_t *data, uint32_t length)> callback_on_indicate) {
     NSString *serviceStr = [[NSString alloc]initWithUTF8String:service.c_str()];
     NSString *charStr = [[NSString alloc]initWithUTF8String:characteristic.c_str()];
-    
+
     CBUUID *service_uuid = [CBUUID UUIDWithString:serviceStr];
     CBUUID *characteristic_uuid = [CBUUID UUIDWithString:charStr];
 
@@ -147,6 +147,10 @@ void NativeBleInternal::indicate(BluetoothUUID service, BluetoothUUID characteri
         callback_on_indicate((const uint8_t*) data.bytes, (uint32_t) data.length);
     }];
     [macable subscribeToNotificationsOnCharacteristic:characteristic_uuid service:service_uuid];
+}
+
+void NativeBleInternal::indicate(BluetoothUUID service, BluetoothUUID characteristic) {
+    // TODO: IMPLEMENT
 }
 
 void NativeBleInternal::disconnect() {

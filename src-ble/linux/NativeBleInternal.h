@@ -46,6 +46,8 @@ class NativeBleInternal {
     void indicate(BluetoothUUID service, BluetoothUUID characteristic,
                   std::function<void(const uint8_t *data, uint32_t length)> callback_on_indicate);
 
+    void unsubscribe(BluetoothUUID service, BluetoothUUID characteristic);
+
     void disconnect();
     void dispose();
 };

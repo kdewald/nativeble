@@ -7,11 +7,11 @@ CMAKE_BUILD_TYPE="Release"
 # Parse the received commands
 while :; do
     case $1 in
-        -c|--clean) FLAG_CLEAN="SET"            
+        -c|--clean) FLAG_CLEAN="SET"
         ;;
-        -d|--debug) 
+        -d|--debug)
         FLAG_DEBUG="-DDEFINE_DEBUG=ON"
-        CMAKE_BUILD_TYPE="Debug"            
+        CMAKE_BUILD_TYPE="Debug"
         ;;
         *) break
     esac

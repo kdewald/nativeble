@@ -12,6 +12,7 @@ class Device1 : public SimpleDBus::Interfaces::PropertyHandler {
     std::string _name;
     std::string _address;
     bool _connected;
+    bool _services_resolved;
 
     void add_option(std::string option_name, SimpleDBus::Holder value);
     void remove_option(std::string option_name);

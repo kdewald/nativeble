@@ -22,18 +22,17 @@ void BluezService::init() {
 }
 
 void BluezService::run_async() {
-    SimpleDBus::Message message = conn.read_write_pop();
-    if (!message.is_valid()) {
-        return;
-    }
-
-    switch (message.get_type()) {
-        case SimpleDBus::MessageType::SIGNAL:
-            process_received_signal(message);
-            break;
-
-        default:
-            break;
+    conn.read_write();
+    SimpleDBus::Message message = conn.pop_message();
+    while (message.is_valid()) {
+        switch (message.get_type()) {
+            case SimpleDBus::MessageType::SIGNAL:
+                process_received_signal(message);
+                break;
+            default:
+                break;
+        }
+        message = conn.pop_message();
     }
 }
 
@@ -95,5 +94,19 @@ std::shared_ptr<BluezAdapter> BluezService::get_first_adapter() {
         return_value = adapters.begin()->second;
     }
 
+    return return_value;
+}
+
+std::shared_ptr<BluezAdapter> BluezService::get_adapter(std::string adapter_name) {
+    // TODO: This function should eventually query each BluezAdapter.
+    std::shared_ptr<BluezAdapter> return_value = nullptr;
+    std::string expected_path = "/org/bluez/" + adapter_name;
+    // Propagate the paths downwards until someone claims it.
+    for (auto& [adapter_path, adapter] : adapters) {
+        if (adapter_path == expected_path) {
+            return_value = adapter;
+            break;
+        }
+    }
     return return_value;
 }

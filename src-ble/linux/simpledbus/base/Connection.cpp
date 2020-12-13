@@ -14,7 +14,8 @@ Connection::~Connection() {
     SimpleDBus::Message message;
     do {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        message = read_write_pop();
+        read_write();
+        message = pop_message();
     } while (message.is_valid());
     // ---------------------------------------------------------
 
@@ -23,6 +24,7 @@ Connection::~Connection() {
 }
 
 void Connection::init() {
+    dbus_threads_init_default();
     dbus_error_init(&err);
     conn = dbus_bus_get(_dbus_bus_type, &err);
     if (dbus_error_is_set(&err)) {
@@ -49,9 +51,12 @@ void Connection::remove_match(std::string rule) {
     }
 }
 
-Message Connection::read_write_pop() {
+void Connection::read_write() {
     // Non blocking read of the next available message
-    dbus_connection_read_write(conn, 0);
+    dbus_connection_read_write_dispatch(conn, 0);
+}
+
+Message Connection::pop_message() {
     DBusMessage* msg = dbus_connection_pop_message(conn);
     if (msg == nullptr) {
         return Message();

@@ -20,7 +20,8 @@ class Connection {
     void add_match(std::string rule);
     void remove_match(std::string rule);
 
-    Message read_write_pop();
+    void read_write();
+    Message pop_message();
 
     uint32_t send(Message &msg);
     Message send_with_reply_and_block(Message &msg);

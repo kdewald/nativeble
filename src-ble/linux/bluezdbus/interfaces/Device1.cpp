@@ -22,6 +22,8 @@ void Device1::add_option(std::string option_name, SimpleDBus::Holder value) {
         } else if (!_connected && OnDisconnected) {
             OnDisconnected();
         }
+    } else if (option_name == "ServicesResolved") {
+        _services_resolved = value.get_boolean();
     }
 }
 

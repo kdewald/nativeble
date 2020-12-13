@@ -26,6 +26,7 @@ class CallbackHolder {
     std::function<void(DeviceDescriptor)> callback_on_scan_found;
     std::function<void()> callback_on_device_connected;
     std::function<void(std::string)> callback_on_device_disconnected;
+    // TODO: callback_on_services_resolved;
 
     CallbackHolder()
         : callback_on_scan_start([]() {}),

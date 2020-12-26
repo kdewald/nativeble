@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `OUTPUT_DIR` option to control where artifacts are built.
 
+### Changed
+- Upgraded SimpleDBus to version 1.X.X
+
+
 ## [1.0.0] - 2020-08-14
 
 ### Added

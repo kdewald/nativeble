@@ -24,8 +24,5 @@ class Adapter1 : public SimpleDBus::Interfaces::PropertyHandler {
     SimpleDBus::Holder GetDiscoveryFilters();
     void SetDiscoveryFilter(SimpleDBus::Holder properties);
 
-
     bool is_discovering();
-
-
 };

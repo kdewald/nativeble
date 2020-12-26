@@ -30,4 +30,5 @@ class Device1 : public SimpleDBus::Interfaces::PropertyHandler {
 
     std::function<void(void)> OnConnected;
     std::function<void(void)> OnDisconnected;
+    std::function<void(void)> OnServicesResolved;
 };

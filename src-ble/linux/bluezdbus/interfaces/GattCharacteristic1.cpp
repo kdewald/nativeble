@@ -2,7 +2,8 @@
 
 #include <iostream>
 
-GattCharacteristic1::GattCharacteristic1(SimpleDBus::Connection* conn, std::string path) : _conn(conn), _path(path) {
+GattCharacteristic1::GattCharacteristic1(SimpleDBus::Connection* conn, std::string path)
+    : _conn(conn), _path(path), _notifying(false) {
     // std::cout << "Creating org.bluez.GattCharacteristic1: " << path << std::endl;
 }
 
@@ -20,6 +21,8 @@ void GattCharacteristic1::add_option(std::string option_name, SimpleDBus::Holder
         if (ValueChanged) {
             ValueChanged(_value);
         }
+    } else if (option_name == "Notifying") {
+        _notifying = value.get_boolean();
     }
 }
 
@@ -30,16 +33,18 @@ std::string GattCharacteristic1::get_uuid() { return _uuid; }
 std::vector<uint8_t> GattCharacteristic1::get_value() { return _value; }
 
 void GattCharacteristic1::StartNotify() {
-    // std::cout << "org.bluez.GattCharacteristic1 StartNotify" << std::endl;
-    auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, "org.bluez.GattCharacteristic1",
-                                                       "StartNotify");
-    _conn->send_with_reply_and_block(msg);
+    if (!_notifying) {
+        auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, "org.bluez.GattCharacteristic1",
+                                                           "StartNotify");
+        _conn->send_with_reply_and_block(msg);
+    }
 }
 void GattCharacteristic1::StopNotify() {
-    // std::cout << "org.bluez.GattCharacteristic1 StoptNotify" << std::endl;
-    auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, "org.bluez.GattCharacteristic1",
-                                                       "StopNotify");
-    _conn->send_with_reply_and_block(msg);
+    if (_notifying) {
+        auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, "org.bluez.GattCharacteristic1",
+                                                           "StopNotify");
+        _conn->send_with_reply_and_block(msg);
+    }
 }
 
 void GattCharacteristic1::WriteValue(SimpleDBus::Holder value, SimpleDBus::Holder options) {

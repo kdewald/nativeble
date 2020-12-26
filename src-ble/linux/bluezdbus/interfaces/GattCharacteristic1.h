@@ -12,6 +12,7 @@ class GattCharacteristic1 : public SimpleDBus::Interfaces::PropertyHandler {
 
     std::string _uuid;
     std::vector<uint8_t> _value;
+    bool _notifying;
 
     void add_option(std::string option_name, SimpleDBus::Holder value);
     void remove_option(std::string option_name);

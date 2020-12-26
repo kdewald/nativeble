@@ -122,7 +122,7 @@ void NativeBleInternal::notify(BluetoothUUID service_uuid, BluetoothUUID charact
     if (device == nullptr) return;
     auto characteristic = device->get_characteristic(service_uuid, characteristic_uuid);
     if (characteristic != nullptr) {
-        characteristic->ValueChanged = [callback_on_notify](std::vector<uint8_t>& new_value) {
+        characteristic->ValueChanged = [callback_on_notify](std::vector<uint8_t> new_value) {
             callback_on_notify(&new_value[0], new_value.size());
         };
         characteristic->StartNotify();
@@ -134,7 +134,7 @@ void NativeBleInternal::indicate(BluetoothUUID service_uuid, BluetoothUUID chara
     if (device == nullptr) return;
     auto characteristic = device->get_characteristic(service_uuid, characteristic_uuid);
     if (characteristic != nullptr) {
-        characteristic->ValueChanged = [callback_on_indicate](std::vector<uint8_t>& new_value) {
+        characteristic->ValueChanged = [callback_on_indicate](std::vector<uint8_t> new_value) {
             callback_on_indicate(&new_value[0], new_value.size());
         };
         characteristic->StartNotify();
@@ -159,7 +159,7 @@ void NativeBleInternal::dispose() {}
 void NativeBleInternal::async_thread_function() {
     while (async_thread_active) {
         bluez_service.run_async();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        std::this_thread::sleep_for(std::chrono::microseconds(50));
     }
 }
 

@@ -27,7 +27,7 @@ class GattCharacteristic1 : public SimpleDBus::Interfaces::PropertyHandler {
     void WriteValue(SimpleDBus::Holder value, SimpleDBus::Holder options);
     SimpleDBus::Holder ReadValue(SimpleDBus::Holder options);
 
-    std::function<void(std::vector<uint8_t>& new_value)> ValueChanged;
+    std::function<void(std::vector<uint8_t> new_value)> ValueChanged;
 
     void write_request(const uint8_t* data, uint16_t length);
     void write_command(const uint8_t* data, uint16_t length);

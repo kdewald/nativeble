@@ -23,7 +23,7 @@ typedef enum {
     SIGNATURE,
     ARRAY,
     DICT,
-} HolderType;
+} HolderType; // TODO: Move into the Holder class.
 
 class Holder;
 

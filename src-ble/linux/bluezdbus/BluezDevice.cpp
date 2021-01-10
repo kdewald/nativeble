@@ -1,5 +1,7 @@
 #include "BluezDevice.h"
 
+#include "simpledbus/base/Logger.h"
+
 #include <iostream>
 
 BluezDevice::BluezDevice(SimpleDBus::Connection* conn, std::string path, SimpleDBus::Holder managed_interfaces)
@@ -62,7 +64,10 @@ bool BluezDevice::add_path(std::string path, SimpleDBus::Holder options) {
     return false;
 }
 
-bool BluezDevice::remove_path(std::string path, SimpleDBus::Holder options) { return false; }
+bool BluezDevice::remove_path(std::string path, SimpleDBus::Holder options) {
+    LOG_F(DEBUG, "remove_path not implemented (%s needed to remove %s)", _path.c_str(), _path.c_str());
+    return false;
+}
 
 std::shared_ptr<BluezGattService> BluezDevice::get_service(std::string service_uuid) {
     std::shared_ptr<BluezGattService> return_value = nullptr;

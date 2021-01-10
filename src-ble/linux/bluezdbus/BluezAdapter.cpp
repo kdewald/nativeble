@@ -1,5 +1,7 @@
 #include "BluezAdapter.h"
 
+#include "simpledbus/base/Logger.h"
+
 #include <iostream>
 
 BluezAdapter::BluezAdapter(SimpleDBus::Connection* conn, std::string path, SimpleDBus::Holder managed_interfaces)
@@ -65,6 +67,7 @@ bool BluezAdapter::add_path(std::string path, SimpleDBus::Holder options) {
 }
 
 bool BluezAdapter::remove_path(std::string path, SimpleDBus::Holder options) {
+    LOG_F(DEBUG, "remove_path not implemented (%s needed to remove %s)", _path.c_str(), _path.c_str());
     // TODO: Implement
     return false;
 }

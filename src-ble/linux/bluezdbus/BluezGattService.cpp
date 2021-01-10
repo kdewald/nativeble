@@ -1,5 +1,7 @@
 #include "BluezGattService.h"
 
+#include "simpledbus/base/Logger.h"
+
 #include <iostream>
 
 BluezGattService::BluezGattService(SimpleDBus::Connection* conn, std::string path,
@@ -63,7 +65,10 @@ bool BluezGattService::add_path(std::string path, SimpleDBus::Holder options) {
     return false;
 }
 
-bool BluezGattService::remove_path(std::string path, SimpleDBus::Holder options) { return false; }
+bool BluezGattService::remove_path(std::string path, SimpleDBus::Holder options) {
+    LOG_F(DEBUG, "remove_path not implemented (%s needed to remove %s)", _path.c_str(), _path.c_str());
+    return false;
+}
 
 std::shared_ptr<BluezGattCharacteristic> BluezGattService::get_characteristic(std::string char_uuid) {
     std::shared_ptr<BluezGattCharacteristic> return_value = nullptr;

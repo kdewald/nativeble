@@ -48,10 +48,10 @@ class Message {
   public:
     Message();
     Message(DBusMessage* msg);
-    Message(Message&& other) = delete;       // Remove the move constructor
-    Message(const Message& other) = delete;  // Remove the copy constructor
-    Message& operator=(Message&& other);
-    Message& operator=(const Message& other);
+    Message(Message&& other) = delete;         // Remove the move constructor
+    Message(const Message& other) = delete;    // Remove the copy constructor
+    Message& operator=(Message&& other);       // Implement custom move assignment
+    Message& operator=(const Message& other);  // Implement custom copy assignment
     ~Message();
 
     bool is_valid() const;

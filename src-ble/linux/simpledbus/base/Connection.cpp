@@ -1,4 +1,5 @@
 #include "Connection.h"
+#include "simpledbus/base/Logger.h"
 
 #include <chrono>
 #include <iostream>
@@ -28,7 +29,7 @@ void Connection::init() {
     dbus_error_init(&err);
     conn = dbus_bus_get(_dbus_bus_type, &err);
     if (dbus_error_is_set(&err)) {
-        std::cout << "ERROR: " << err.name << " " << err.message << std::endl;
+        LOG_F(ERROR, "Failed to get the DBus bus. (%s: %s)", err.name, err.message);
         dbus_error_free(&err);
     }
 }
@@ -37,7 +38,7 @@ void Connection::add_match(std::string rule) {
     dbus_bus_add_match(conn, rule.c_str(), &err);
     dbus_connection_flush(conn);
     if (dbus_error_is_set(&err)) {
-        std::cout << "ERROR: " << err.name << " " << err.message << std::endl;
+        LOG_F(ERROR, "Failed to add match. (%s: %s)", err.name, err.message);
         dbus_error_free(&err);
     }
 }
@@ -46,7 +47,7 @@ void Connection::remove_match(std::string rule) {
     dbus_bus_remove_match(conn, rule.c_str(), &err);
     dbus_connection_flush(conn);
     if (dbus_error_is_set(&err)) {
-        std::cout << "ERROR: " << err.name << " " << err.message << std::endl;
+        LOG_F(ERROR, "Failed to remove match. (%s: %s)", err.name, err.message);
         dbus_error_free(&err);
     }
 }
@@ -70,7 +71,7 @@ uint32_t Connection::send(Message& msg) {
     bool success = dbus_connection_send(conn, msg._msg, &msg_serial);
 
     if (!success) {
-        std::cout << "ERROR: Could not send message." << std::endl;
+        LOG_F(ERROR, "Message send failed.");
     } else {
         dbus_connection_flush(conn);
     }
@@ -81,9 +82,9 @@ Message Connection::send_with_reply_and_block(Message& msg) {
     DBusMessage* msg_tmp = dbus_connection_send_with_reply_and_block(conn, msg._msg, -1, &err);
 
     if (dbus_error_is_set(&err)) {
-        std::cout << "ERROR: " << err.name << " " << err.message << std::endl;
+        LOG_F(WARN, "Message send failed. (%s: %s)", err.name, err.message);
         dbus_error_free(&err);
-        return Message();
+        return Message(); // TODO: Insert error here into the message class.
     } else {
         return Message(msg_tmp);
     }

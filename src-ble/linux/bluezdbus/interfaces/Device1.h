@@ -6,6 +6,8 @@
 
 class Device1 : public SimpleDBus::Interfaces::PropertyHandler {
   private:
+    static const std::string _interface_name;
+
     SimpleDBus::Connection* _conn;
     std::string _path;
 

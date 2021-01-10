@@ -1,10 +1,11 @@
 #include "GattCharacteristic1.h"
 
-#include <iostream>
+#include "simpledbus/base/Logger.h"
+
+const std::string GattCharacteristic1::_interface_name = "org.bluez.GattCharacteristic1";
 
 GattCharacteristic1::GattCharacteristic1(SimpleDBus::Connection* conn, std::string path)
     : _conn(conn), _path(path), _notifying(false) {
-    // std::cout << "Creating org.bluez.GattCharacteristic1: " << path << std::endl;
 }
 
 GattCharacteristic1::~GattCharacteristic1() {}
@@ -34,32 +35,34 @@ std::vector<uint8_t> GattCharacteristic1::get_value() { return _value; }
 
 void GattCharacteristic1::StartNotify() {
     if (!_notifying) {
-        auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, "org.bluez.GattCharacteristic1",
-                                                           "StartNotify");
+        LOG_F(DEBUG, "%s -> StartNotify", _path.c_str());
+        auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, _interface_name, "StartNotify");
         _conn->send_with_reply_and_block(msg);
+    } else {
+        LOG_F(WARN, "%s is already notifying...", _path.c_str());
     }
 }
 void GattCharacteristic1::StopNotify() {
     if (_notifying) {
-        auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, "org.bluez.GattCharacteristic1",
-                                                           "StopNotify");
+        LOG_F(DEBUG, "%s -> StopNotify", _path.c_str());
+        auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, _interface_name, "StopNotify");
         _conn->send_with_reply_and_block(msg);
+    } else {
+        LOG_F(WARN, "%s was not notifying...", _path.c_str());
     }
 }
 
 void GattCharacteristic1::WriteValue(SimpleDBus::Holder value, SimpleDBus::Holder options) {
-    // std::cout << "org.bluez.GattCharacteristic1 WriteValue" << std::endl;
-    auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, "org.bluez.GattCharacteristic1",
-                                                       "WriteValue");
+    LOG_F(DEBUG, "%s -> WriteValue", _path.c_str());
+    auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, _interface_name, "WriteValue");
     msg.append_argument(value, "ay");
     msg.append_argument(options, "a{sv}");
     _conn->send_with_reply_and_block(msg);
 }
 
 SimpleDBus::Holder GattCharacteristic1::ReadValue(SimpleDBus::Holder options) {
-    // std::cout << "org.bluez.GattCharacteristic1 ReadValue" << std::endl;
-    auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, "org.bluez.GattCharacteristic1",
-                                                       "ReadValue");
+    LOG_F(DEBUG, "%s -> ReadValue", _path.c_str());
+    auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, _interface_name, "ReadValue");
     msg.append_argument(options, "a{sv}");
     SimpleDBus::Message reply_msg = _conn->send_with_reply_and_block(msg);
     SimpleDBus::Holder value = reply_msg.extract();

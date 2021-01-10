@@ -6,6 +6,8 @@
 
 class Adapter1 : public SimpleDBus::Interfaces::PropertyHandler {
   private:
+    static const std::string _interface_name;
+
     SimpleDBus::Connection* _conn;
     std::string _path;
 
@@ -18,11 +20,16 @@ class Adapter1 : public SimpleDBus::Interfaces::PropertyHandler {
     Adapter1(SimpleDBus::Connection* conn, std::string path);
     ~Adapter1();
 
+    // DBus Methods
     void StartDiscovery();
     void StopDiscovery();
-
-    SimpleDBus::Holder GetDiscoveryFilters();
     void SetDiscoveryFilter(SimpleDBus::Holder properties);
-
+    SimpleDBus::Holder GetDiscoveryFilters();
+    
     bool is_discovering();
+
+    std::function<void(void)> OnDiscoveryStarted;
+    std::function<void(void)> OnDiscoveryStopped;
+
+
 };

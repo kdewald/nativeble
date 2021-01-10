@@ -1,5 +1,7 @@
 #include "BluezGattCharacteristic.h"
 
+#include "simpledbus/base/Logger.h"
+
 #include <iostream>
 
 BluezGattCharacteristic::BluezGattCharacteristic(SimpleDBus::Connection* conn, std::string path,
@@ -60,4 +62,6 @@ bool BluezGattCharacteristic::add_path(std::string path, SimpleDBus::Holder opti
     return false;
 }
 
-bool BluezGattCharacteristic::remove_path(std::string path, SimpleDBus::Holder options) { return false; }
+bool BluezGattCharacteristic::remove_path(std::string path, SimpleDBus::Holder options) { 
+    LOG_F(DEBUG, "remove_path not implemented (%s needed to remove %s)", _path.c_str(), _path.c_str());
+    return false; }

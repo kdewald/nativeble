@@ -9,7 +9,7 @@ using namespace SimpleDBus;
 static const char* log_level_strings[] = {"NONE",  "FATAL",   "ERROR",   "WARN",   "INFO",
                                           "DEBUG", "VERBOSE", "VERBOSE", "VERBOSE"};
 
-Logger::Logger() : _log_level(LogLevel::LOG_INFO) {}
+Logger::Logger() : _log_level(LogLevel::LOG_VERBOSE_2) {}
 
 Logger::~Logger() {}
 

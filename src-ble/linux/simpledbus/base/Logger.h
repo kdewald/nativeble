@@ -35,7 +35,7 @@ class Logger {
     Logger(Logger &other) = delete;           // Remove the copy constructor
     void operator=(const Logger &) = delete;  // Remove the copy assignment
 
-    void print_log(std::string message);
+    void print_log_needslock(std::string message);
 
     LogLevel _log_level;
     std::mutex _mutex;

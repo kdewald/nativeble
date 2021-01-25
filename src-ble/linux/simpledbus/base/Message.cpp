@@ -69,7 +69,11 @@ void Message::_invalidate() {
     this->_iter_initialized = false;
     this->_is_extracted = false;
     this->_extracted = Holder();
+    #ifdef DBUS_MESSAGE_ITER_INIT_CLOSED
     this->_iter = DBUS_MESSAGE_ITER_INIT_CLOSED;
+    #else
+    this->_iter = DBusMessageIter();
+    #endif
 }
 
 void Message::_safe_delete() {

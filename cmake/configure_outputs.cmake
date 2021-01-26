@@ -19,11 +19,17 @@ target_link_libraries(nativeble ${BLE_LIBS})
 
 file(COPY "src-ble/NativeBleController.h" "src-ble/NativeBleControllerTypes.h" DESTINATION ${OUTPUT_DIR})
 
+install(FILES "src-ble/NativeBleController.h" "src-ble/NativeBleControllerTypes.h" DESTINATION include)
+install(TARGETS nativeble-static nativeble)
+
 IF(ENABLE_LIB_BLE_C_API)
     message("-- [INFO] Building Native BLE C Wrapper")
     file(GLOB_RECURSE SRC_BLE_C_API_FILES "src-ble-c-api/*.cpp" "src-ble-c-api/*.h")
     add_library(nativeble_c SHARED ${SRC_BLE_C_API_FILES})
     target_link_libraries(nativeble_c nativeble-static)
+
+    install(FILES "src-ble-c-api/ble_c_api.h" DESTINATION include)
+    install(TARGETS nativeble_c)
 ENDIF()
 
 IF(ENABLE_APP_BLE_TEST)

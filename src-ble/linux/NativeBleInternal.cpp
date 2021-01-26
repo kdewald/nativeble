@@ -1,4 +1,5 @@
 #include "NativeBleInternal.h"
+#include <future>
 #include <sstream>
 
 using namespace NativeBLE;
@@ -43,7 +44,12 @@ void NativeBleInternal::scan_start() {
         }
     };
     adapter->discovery_filter_transport_set("le");
+    std::promise<void> discovery_started;
+    adapter->OnDiscoveryStarted = [&]() {
+        discovery_started.set_value();
+    };
     adapter->StartDiscovery();
+    discovery_started.get_future().get();
     callback_holder.callback_on_scan_start();
 }
 

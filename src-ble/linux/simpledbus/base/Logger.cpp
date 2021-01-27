@@ -20,7 +20,7 @@ Logger* Logger::get() {
     return &instance;
 }
 
-void Logger::print_log_needslock(std::string message) {
+void Logger::print_log(std::string message) {
     std::cerr << message << std::endl;
 }
 
@@ -38,7 +38,7 @@ void Logger::log(LogLevel level, const char* file, const char* function, unsigne
 
     std::string log_message = Logger::string_format("%s(%s:%u) [%7s] %s", filename.c_str(), function_signature.c_str(),
                                                     line, log_level_strings[level], user_message.c_str());
-    print_log_needslock(log_message);
+    print_log(log_message);
 }
 
 void Logger::set_level(LogLevel level) {

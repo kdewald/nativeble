@@ -21,7 +21,6 @@ Logger* Logger::get() {
 }
 
 void Logger::print_log(std::string message) {
-    std::scoped_lock lock(_mutex);
     std::cerr << message << std::endl;
 }
 

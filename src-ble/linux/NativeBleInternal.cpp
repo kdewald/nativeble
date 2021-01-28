@@ -30,17 +30,13 @@ void NativeBleInternal::scan_start() {
         DeviceDescriptor descriptor;
         descriptor.address = dev->get_address();
         descriptor.name = dev->get_name();
-        if (dev->get_name() != "") {
-            callback_holder.callback_on_scan_found(descriptor);
-        }
+        callback_holder.callback_on_scan_found(descriptor);
     }
     adapter->OnDeviceFound = [&](std::string address, std::string name) {
         DeviceDescriptor descriptor;
         descriptor.address = address;
         descriptor.name = name;
-        if (name != "") {
-            callback_holder.callback_on_scan_found(descriptor);
-        }
+        callback_holder.callback_on_scan_found(descriptor);
     };
     adapter->discovery_filter_transport_set("le");
     adapter->StartDiscovery();

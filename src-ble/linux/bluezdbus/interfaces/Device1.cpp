@@ -16,7 +16,7 @@ void Device1::add_option(std::string option_name, SimpleDBus::Holder value) {
 
     if (option_name == "Address") {
         _address = value.get_string();
-    } else if (option_name == "Name") {
+    } else if (option_name == "Alias") {
         _name = value.get_string();
     } else if (option_name == "Connected") {
         _connected = value.get_boolean();

@@ -63,7 +63,7 @@ std::string Logger::string_format(const char* format, va_list vlist) {
 
     if (result >= 0) {
         text = std::string(text_buffer);
-        delete[] text_buffer;
+        free(text_buffer);
     } else {
         // An error has happened with vasprintf.
         printf("Error during message generation. Format was: '%s'", format);

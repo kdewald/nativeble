@@ -149,7 +149,7 @@ void NativeBleInternal::indicate(BluetoothUUID service, BluetoothUUID characteri
     [macable subscribeToNotificationsOnCharacteristic:characteristic_uuid service:service_uuid];
 }
 
-void NativeBleInternal::indicate(BluetoothUUID service, BluetoothUUID characteristic) {
+void NativeBleInternal::unsubscribe(BluetoothUUID service, BluetoothUUID characteristic) {
     // TODO: IMPLEMENT
 }
 

@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgraded SimpleDBus to version 1.X.X
 - Increased the speed of the Linux async thread polling to every 50us.
 
+### Fixed
+- Added missing declaration for `NativeBleInternal::unsubscribe` in MacOS. (Thanks Mach1!)
+
 
 ## [1.0.0] - 2020-08-14
 

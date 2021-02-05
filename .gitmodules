@@ -1,0 +1,3 @@
+[submodule "extern/simpledbus"]
+	path = extern/simpledbus
+	url = https://github.com/kdewald/simpledbus

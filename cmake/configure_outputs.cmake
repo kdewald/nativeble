@@ -9,7 +9,7 @@ ELSEIF(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     file(GLOB_RECURSE SRC_BLE_FILES "src-ble/NativeBleController.cpp" "src-ble/macos/*.cpp"  "src-ble/macos/*.cc" "src-ble/macos/*.mm")
 ELSEIF(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     include_directories(${PROJECT_DIR_PATH}/src-ble/linux)
-    file(GLOB_RECURSE SRC_BLE_FILES "src-ble/NativeBleController.cpp" "src-ble/linux/*.cpp"  "src-ble/linux/*.cc")
+    file(GLOB_RECURSE SRC_BLE_FILES FOLLOW_SYMLINKS "src-ble/NativeBleController.cpp" "src-ble/linux/*.cpp"  "src-ble/linux/*.cc")
 ENDIF()
 
 add_library(nativeble-static STATIC ${SRC_BLE_FILES})

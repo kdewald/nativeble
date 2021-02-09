@@ -16,8 +16,12 @@ void Device1::add_option(std::string option_name, SimpleDBus::Holder value) {
 
     if (option_name == "Address") {
         _address = value.get_string();
-    } else if (option_name == "Alias") {
+    } else if (option_name == "Name") {
         _name = value.get_string();
+    } else if (option_name == "Alias") {
+        _alias = value.get_string();
+    } else if (option_name == "RSSI") {
+        _rssi = value.get_int16();
     } else if (option_name == "Connected") {
         _connected = value.get_boolean();
         if (_connected && OnConnected) {
@@ -74,7 +78,11 @@ void Device1::Disconnect() {
     }
 }
 
+int16_t Device1::get_rssi() { return _rssi; }
+
 std::string Device1::get_name() { return _name; }
+
+std::string Device1::get_alias() { return _alias; }
 
 std::string Device1::get_address() { return _address; }
 

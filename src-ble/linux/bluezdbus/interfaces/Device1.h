@@ -11,7 +11,9 @@ class Device1 : public SimpleDBus::Interfaces::PropertyHandler {
     SimpleDBus::Connection* _conn;
     std::string _path;
 
+    int16_t _rssi;
     std::string _name;
+    std::string _alias;
     std::string _address;
     bool _connected;
     bool _services_resolved;
@@ -26,7 +28,9 @@ class Device1 : public SimpleDBus::Interfaces::PropertyHandler {
     void Connect();
     void Disconnect();
 
+    int16_t get_rssi();
     std::string get_name();
+    std::string get_alias();
     std::string get_address();
     bool is_connected();
 

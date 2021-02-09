@@ -67,8 +67,18 @@ bool BluezAdapter::add_path(std::string path, SimpleDBus::Holder options) {
 }
 
 bool BluezAdapter::remove_path(std::string path, SimpleDBus::Holder options) {
-    LOG_F(DEBUG, "remove_path not implemented (%s needed to remove %s)", _path.c_str(), _path.c_str());
-    // TODO: Implement
+    int path_elements = std::count(path.begin(), path.end(), '/');
+    if (path.rfind(_path, 0) == 0) {
+        if (path_elements == 4) {
+            devices.erase(path);
+            return true;
+        } else {
+            // Propagate the paths downwards until someone claims it.
+            for (auto& [device_path, device] : devices) {
+                if (device->remove_path(path, options)) return true;
+            }
+        }
+    }
     return false;
 }
 

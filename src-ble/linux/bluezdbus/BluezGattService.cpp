@@ -66,7 +66,18 @@ bool BluezGattService::add_path(std::string path, SimpleDBus::Holder options) {
 }
 
 bool BluezGattService::remove_path(std::string path, SimpleDBus::Holder options) {
-    LOG_F(DEBUG, "remove_path not implemented (%s needed to remove %s)", _path.c_str(), _path.c_str());
+    int path_elements = std::count(path.begin(), path.end(), '/');
+    if (path.rfind(_path, 0) == 0) {
+        if (path_elements == 6) {
+            gatt_characteristics.erase(path);
+            return true;
+        } else {
+            // Propagate the paths downwards until someone claims it.
+            for (auto& [gatt_char_path, gatt_characteristic] : gatt_characteristics) {
+                if (gatt_characteristic->remove_path(path, options)) return true;
+            }
+        }
+    }
     return false;
 }
 

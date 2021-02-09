@@ -38,14 +38,10 @@ Holder& Holder::operator=(const Holder& other) {
                 this->holder_string = other.holder_string;
                 break;
             case ARRAY:
-                for (int i = 0; i < other.holder_array.size(); i++) {
-                    this->holder_array.push_back(other.holder_array[i]);
-                }
+                this->holder_array = other.holder_array;
                 break;
             case DICT:
-                for (auto& [key, value] : other.holder_dict) {
-                    this->holder_dict[key] = value;
-                }
+                this->holder_dict = other.holder_dict;
                 break;
         }
     }

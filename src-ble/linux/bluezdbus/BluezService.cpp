@@ -68,14 +68,12 @@ void BluezService::add_path(std::string path, SimpleDBus::Holder options) {
 }
 
 void BluezService::remove_path(std::string path, SimpleDBus::Holder options) {
-    // TODO: Do we need to notify the objects that they are being deleted?
     int path_elements = std::count(path.begin(), path.end(), '/');
 
     switch (path_elements) {
         case 2:
             break;
         case 3:
-            // ! FIXME: There's the possibility that individual interfaces might get removed.
             adapters.erase(path);
             break;
         default:
@@ -89,7 +87,6 @@ void BluezService::remove_path(std::string path, SimpleDBus::Holder options) {
 
 std::shared_ptr<BluezAdapter> BluezService::get_first_adapter() {
     std::shared_ptr<BluezAdapter> return_value = nullptr;
-
     if (!adapters.empty()) {
         return_value = adapters.begin()->second;
     }
@@ -98,10 +95,9 @@ std::shared_ptr<BluezAdapter> BluezService::get_first_adapter() {
 }
 
 std::shared_ptr<BluezAdapter> BluezService::get_adapter(std::string adapter_name) {
-    // TODO: This function should eventually query each BluezAdapter.
     std::shared_ptr<BluezAdapter> return_value = nullptr;
     std::string expected_path = "/org/bluez/" + adapter_name;
-    // Propagate the paths downwards until someone claims it.
+
     for (auto& [adapter_path, adapter] : adapters) {
         if (adapter_path == expected_path) {
             return_value = adapter;

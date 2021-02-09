@@ -6,7 +6,6 @@
 
 BluezDevice::BluezDevice(SimpleDBus::Connection* conn, std::string path, SimpleDBus::Holder managed_interfaces)
     : _conn(conn), _path(path), Device1{conn, path}, Properties{conn, "org.bluez", path} {
-    // std::cout << "Creating BluezDevice: " << path << std::endl;
 
     Properties::PropertiesChanged = [&](std::string interface, SimpleDBus::Holder changed_properties,
                                         SimpleDBus::Holder invalidated_properties) {
@@ -22,9 +21,7 @@ BluezDevice::BluezDevice(SimpleDBus::Connection* conn, std::string path, SimpleD
     }
 }
 
-BluezDevice::~BluezDevice() {
-    // std::cout << "Destroying BluezDevice" << std::endl;
-}
+BluezDevice::~BluezDevice() {}
 
 bool BluezDevice::process_received_signal(SimpleDBus::Message& message) {
     if (message.get_path() == _path) {
@@ -38,7 +35,6 @@ bool BluezDevice::process_received_signal(SimpleDBus::Message& message) {
 }
 
 void BluezDevice::add_interface(std::string interface_name, SimpleDBus::Holder options) {
-    // std::cout << interface_name << std::endl;
     if (interface_name == "org.bluez.Device1") {
         Device1::set_options(options);
     } else {
@@ -65,7 +61,18 @@ bool BluezDevice::add_path(std::string path, SimpleDBus::Holder options) {
 }
 
 bool BluezDevice::remove_path(std::string path, SimpleDBus::Holder options) {
-    LOG_F(DEBUG, "remove_path not implemented (%s needed to remove %s)", _path.c_str(), _path.c_str());
+    int path_elements = std::count(path.begin(), path.end(), '/');
+    if (path.rfind(_path, 0) == 0) {
+        if (path_elements == 5) {
+            gatt_services.erase(path);
+            return true;
+        } else {
+            // Propagate the paths downwards until someone claims it.
+            for (auto& [gatt_service_path, gatt_service] : gatt_services) {
+                if (gatt_service->remove_path(path, options)) return true;
+            }
+        }
+    }
     return false;
 }
 

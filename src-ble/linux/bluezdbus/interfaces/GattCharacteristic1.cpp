@@ -16,10 +16,12 @@ void GattCharacteristic1::add_option(std::string option_name, SimpleDBus::Holder
     } else if (option_name == "Value") {
         _value.clear();
         auto value_array = value.get_array();
+        LOG_F(VERBOSE_2, "%s -> Value Length: %d", _path.c_str(), value_array.size());
         for (auto& elem : value_array) {
             _value.push_back(elem.get_byte());
         }
         if (ValueChanged) {
+            LOG_F(VERBOSE_2, "%s -> ValueChanged\n%s", _path.c_str(), value.represent().c_str());
             ValueChanged(_value);
         }
     } else if (option_name == "Notifying") {

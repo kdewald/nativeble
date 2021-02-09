@@ -69,11 +69,13 @@ void Message::_invalidate() {
     this->_iter_initialized = false;
     this->_is_extracted = false;
     this->_extracted = Holder();
-    #ifdef DBUS_MESSAGE_ITER_INIT_CLOSED
+
+#ifdef DBUS_MESSAGE_ITER_INIT_CLOSED
     this->_iter = DBUS_MESSAGE_ITER_INIT_CLOSED;
-    #else
+#else
+    // For older versions of DBus, DBUS_MESSAGE_ITER_INIT_CLOSED is not defined.
     this->_iter = DBusMessageIter();
-    #endif
+#endif
 }
 
 void Message::_safe_delete() {
@@ -273,8 +275,8 @@ std::string Message::to_string() const {
     destination = dbus_message_get_destination(_msg);
     destination = destination ? destination : "(null)";
 
-    oss << "[" << _unique_id << "] " << type_to_name(dbus_message_get_type(_msg)) << "[" << sender << "->" << destination
-        << "] ";
+    oss << "[" << _unique_id << "] " << type_to_name(dbus_message_get_type(_msg));
+    oss << "[" << sender << "->" << destination << "] ";
     oss << dbus_message_get_path(_msg) << " " << dbus_message_get_interface(_msg) << " "
         << dbus_message_get_member(_msg) << " ";
 

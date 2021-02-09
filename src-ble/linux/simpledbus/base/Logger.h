@@ -21,7 +21,8 @@ class Logger {
         LOG_DEBUG,
         LOG_VERBOSE_0,
         LOG_VERBOSE_1,
-        LOG_VERBOSE_2
+        LOG_VERBOSE_2,
+        LOG_VERBOSE_3,  // Used for tracking the creation/destruction of BlueZ abstractions.
     } LogLevel;
 
     static Logger *get();

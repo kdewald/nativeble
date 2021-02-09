@@ -7,9 +7,9 @@
 using namespace SimpleDBus;
 
 static const char* log_level_strings[] = {"NONE",  "FATAL",   "ERROR",   "WARN",   "INFO",
-                                          "DEBUG", "VERBOSE", "VERBOSE", "VERBOSE"};
+                                          "DEBUG", "VERBOSE", "VERBOSE", "VERBOSE", "VERBOSE"};
 
-Logger::Logger() : _log_level(LogLevel::LOG_VERBOSE_2) {}
+Logger::Logger() : _log_level(LogLevel::LOG_VERBOSE_0) {}
 
 Logger::~Logger() {}
 
@@ -20,9 +20,7 @@ Logger* Logger::get() {
     return &instance;
 }
 
-void Logger::print_log(std::string message) {
-    std::cerr << message << std::endl;
-}
+void Logger::print_log(std::string message) { std::cerr << message << std::endl; }
 
 void Logger::log(LogLevel level, const char* file, const char* function, unsigned int line, const char* format, ...) {
     std::scoped_lock lock(_mutex);
@@ -36,8 +34,8 @@ void Logger::log(LogLevel level, const char* file, const char* function, unsigne
     std::string function_signature = parse_function_signature(function);
     std::string filename = parse_file_path(file);
 
-    std::string log_message = Logger::string_format("%s(%s:%u) [%7s] %s", filename.c_str(), function_signature.c_str(),
-                                                    line, log_level_strings[level], user_message.c_str());
+    std::string log_message = Logger::string_format("[%7s] %s (%s:%u) %s", log_level_strings[level], filename.c_str(),
+                                                    function_signature.c_str(), line, user_message.c_str());
     print_log(log_message);
 }
 

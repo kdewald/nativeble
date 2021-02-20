@@ -25,11 +25,9 @@ class Adapter1 : public SimpleDBus::Interfaces::PropertyHandler {
     void StopDiscovery();
     void SetDiscoveryFilter(SimpleDBus::Holder properties);
     SimpleDBus::Holder GetDiscoveryFilters();
-    
+
     bool is_discovering();
 
     std::function<void(void)> OnDiscoveryStarted;
     std::function<void(void)> OnDiscoveryStopped;
-
-
 };

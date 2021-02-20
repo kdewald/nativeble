@@ -48,10 +48,10 @@ class Message {
   public:
     Message();
     Message(DBusMessage* msg);
-    Message(Message&& other) = delete;         // Remove the move constructor
-    Message(const Message& other) = delete;    // Remove the copy constructor
-    Message& operator=(Message&& other);       // Implement custom move assignment
-    Message& operator=(const Message& other);  // Implement custom copy assignment
+    Message(Message&& other);                  // Custom move constructor
+    Message(const Message& other);             // Custom copy constructor
+    Message& operator=(Message&& other);       // Custom move assignment
+    Message& operator=(const Message& other);  // Custom copy assignment
     ~Message();
 
     bool is_valid() const;
@@ -63,6 +63,8 @@ class Message {
     void extract_next();
     std::string to_string() const;
 
+    int32_t get_unique_id();
+    uint32_t get_serial();
     std::string get_signature();
     std::string get_interface();
     std::string get_path();

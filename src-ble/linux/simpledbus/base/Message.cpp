@@ -23,6 +23,36 @@ Message::~Message() {
     }
 }
 
+Message::Message(Message&& other) : Message() {
+    // Move constructor: Other needs to be completely cleared.
+    // Copy all fields over directly.
+    indent = other.indent;
+
+    this->_unique_id = other._unique_id;
+    this->_iter_initialized = other._iter_initialized;
+    this->_is_extracted = other._is_extracted;
+    this->_extracted = other._extracted;
+    this->_msg = other._msg;
+    this->_iter = other._iter;
+
+    // Invalidate the old message.
+    other._invalidate();
+}
+
+Message::Message(const Message& other) : Message() {
+    // Copy assignment: We need a completely new message and preserve the old one.
+    // After a safe deletion, a copy only needs to be made if the other message is valid.
+    if (other.is_valid()) {
+        // Copy all fields over directly
+        indent = other.indent;
+
+        this->_unique_id = creation_counter++;
+        this->_is_extracted = other._is_extracted;
+        this->_extracted = other._extracted;
+        this->_msg = dbus_message_copy(other._msg);
+    }
+}
+
 Message& Message::operator=(Message&& other) {
     // Move assignment: Other needs to be completely cleared.
     if (this != &other) {
@@ -209,6 +239,16 @@ void Message::append_argument(Holder argument, std::string signature) {
     _append_argument(&_iter, argument, signature);
 }
 
+int32_t Message::get_unique_id() { return _unique_id; }
+
+uint32_t Message::get_serial() {
+    if (is_valid()) {
+        return dbus_message_get_serial(_msg);
+    } else {
+        return 0;
+    }
+}
+
 std::string Message::get_signature() {
     if (is_valid() && _iter_initialized) {
         return dbus_message_iter_get_signature(&_iter);
@@ -226,7 +266,7 @@ MessageType Message::get_type() {
 }
 
 std::string Message::get_path() {
-    if (is_valid()) {
+    if (is_valid() && get_type() == MessageType::SIGNAL) {
         return dbus_message_get_path(_msg);
     } else {
         return "";

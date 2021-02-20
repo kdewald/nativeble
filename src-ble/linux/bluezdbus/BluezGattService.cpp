@@ -2,13 +2,9 @@
 
 #include "simpledbus/base/Logger.h"
 
-#include <iostream>
-
 BluezGattService::BluezGattService(SimpleDBus::Connection* conn, std::string path,
                                    SimpleDBus::Holder managed_interfaces)
     : _conn(conn), _path(path), GattService1{conn, path}, Properties{conn, "org.bluez", path} {
-    // std::cout << "Creating BluezGattService: " << path << std::endl;
-
     Properties::PropertiesChanged = [&](std::string interface, SimpleDBus::Holder changed_properties,
                                         SimpleDBus::Holder invalidated_properties) {
         if (interface == "org.bluez.GattService1") {
@@ -23,9 +19,7 @@ BluezGattService::BluezGattService(SimpleDBus::Connection* conn, std::string pat
     }
 }
 
-BluezGattService::~BluezGattService() {
-    // std::cout << "Destroying BluezGattService" << std::endl;
-}
+BluezGattService::~BluezGattService() {}
 
 bool BluezGattService::process_received_signal(SimpleDBus::Message& message) {
     if (message.get_path() == _path) {

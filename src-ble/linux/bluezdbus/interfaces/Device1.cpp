@@ -5,15 +5,11 @@
 const std::string Device1::_interface_name = "org.bluez.Device1";
 
 Device1::Device1(SimpleDBus::Connection* conn, std::string path)
-    : _conn(conn), _path(path), _address(""), _name(""), _connected(false), _services_resolved(false) {
-    // std::cout << "Creating org.bluez.Device1: " << path << std::endl;
-}
+    : _conn(conn), _path(path), _address(""), _name(""), _connected(false), _services_resolved(false) {}
 
 Device1::~Device1() {}
 
 void Device1::add_option(std::string option_name, SimpleDBus::Holder value) {
-    // std::cout << "\t" << option_name << std::endl;
-
     if (option_name == "Address") {
         _address = value.get_string();
     } else if (option_name == "Name") {
@@ -38,6 +34,7 @@ void Device1::add_option(std::string option_name, SimpleDBus::Holder value) {
             OnServicesResolved();
         }
     }
+    // TODO: Add ManufacturerData
 }
 
 void Device1::remove_option(std::string option_name) {}

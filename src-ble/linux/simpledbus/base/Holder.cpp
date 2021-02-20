@@ -1,7 +1,7 @@
 #include "Holder.h"
+#include <iomanip>
 #include <iostream>
 #include <sstream>
-#include <iomanip>
 
 #include "dbus/dbus-protocol.h"
 
@@ -116,9 +116,9 @@ std::vector<std::string> Holder::_represent_container() {
                 for (int i = 0; i < holder_array.size(); i++) {
                     // Represent each byte as a hex string
                     std::stringstream stream;
-                    stream << std::setfill ('0') << std::setw(2) << std::hex << ((int) holder_array[i].get_byte());
+                    stream << std::setfill('0') << std::setw(2) << std::hex << ((int)holder_array[i].get_byte());
                     temp_line += (stream.str() + " ");
-                    if ((i+1) % 32 == 0) {
+                    if ((i + 1) % 32 == 0) {
                         additional_lines.push_back(temp_line);
                         temp_line = "";
                     }
@@ -126,7 +126,9 @@ std::vector<std::string> Holder::_represent_container() {
                 additional_lines.push_back(temp_line);
             } else {
                 for (int i = 0; i < holder_array.size(); i++) {
-                    additional_lines = holder_array[i]._represent_container();
+                    for (auto& line : holder_array[i]._represent_container()) {
+                        additional_lines.push_back(line);
+                    }
                 }
             }
             for (auto& line : additional_lines) {

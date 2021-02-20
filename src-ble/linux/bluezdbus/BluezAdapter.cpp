@@ -70,7 +70,23 @@ bool BluezAdapter::remove_path(std::string path, SimpleDBus::Holder options) {
     int path_elements = std::count(path.begin(), path.end(), '/');
     if (path.rfind(_path, 0) == 0) {
         if (path_elements == 4) {
-            devices.erase(path);
+            // HACK: Due to the library architecture, the only way to make sure if one
+            // of the underlying objects has to be deleted is to check if the options
+            // list contains `org.bluez.Device1`, `org.freedesktop.DBus.Introspectable`,
+            // or `org.freedesktop.DBus.Properties`.
+            // A BluezDevice might also extend from `org.bluez.Battery1`, for example.
+            // Eventually this structure will have to be revisited.
+            std::vector<std::string> interface_list;
+            for (auto& option : options.get_array()) {
+                interface_list.push_back(option.get_string());
+            }
+            bool must_erase = std::any_of(interface_list.begin(), interface_list.end(), [](const std::string& str) {
+                return str == "org.freedesktop.DBus.Properties" || str == "org.freedesktop.DBus.Introspectable" ||
+                       str == "org.bluez.Device1";
+            });
+            if (must_erase) {
+                devices.erase(path);
+            }
             return true;
         } else {
             // Propagate the paths downwards until someone claims it.

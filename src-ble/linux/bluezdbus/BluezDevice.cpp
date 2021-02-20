@@ -6,7 +6,6 @@
 
 BluezDevice::BluezDevice(SimpleDBus::Connection* conn, std::string path, SimpleDBus::Holder managed_interfaces)
     : _conn(conn), _path(path), Device1{conn, path}, Properties{conn, "org.bluez", path} {
-
     Properties::PropertiesChanged = [&](std::string interface, SimpleDBus::Holder changed_properties,
                                         SimpleDBus::Holder invalidated_properties) {
         if (interface == "org.bluez.Device1") {

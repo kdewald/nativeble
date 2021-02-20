@@ -9,13 +9,11 @@ GattService1::GattService1(SimpleDBus::Connection* conn, std::string path) : _co
 GattService1::~GattService1() {}
 
 void GattService1::add_option(std::string option_name, SimpleDBus::Holder value) {
-    if(option_name == "UUID"){
+    if (option_name == "UUID") {
         _uuid = value.get_string();
     }
 }
 
 void GattService1::remove_option(std::string option_name) {}
 
-std::string GattService1::get_uuid(){
-    return _uuid;
-}
+std::string GattService1::get_uuid() { return _uuid; }

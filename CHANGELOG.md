@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `OUTPUT_DIR` option to control where artifacts are built.
 
 ### Changed
-- Upgraded SimpleDBus to version 1.X.X
+- Upgraded SimpleDBus to version 1.1.1
 - Increased the speed of the Linux async thread polling to every 50us.
 
 ### Fixed

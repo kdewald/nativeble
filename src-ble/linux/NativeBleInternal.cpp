@@ -71,9 +71,7 @@ void NativeBleInternal::connect(const BluetoothAddress& address) {
     if (adapter == nullptr) return;
     device = adapter->get_device(address);
     if (device != nullptr) {
-        device->OnConnected = [&]() {
-            // ! WORKAROUND: Sleep for a short while until services are resolved.
-            std::this_thread::sleep_for(std::chrono::milliseconds(250));
+        device->OnServicesResolved = [&]() {
             callback_holder.callback_on_device_connected();
         };
         device->Connect();

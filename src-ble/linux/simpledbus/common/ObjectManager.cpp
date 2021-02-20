@@ -2,8 +2,6 @@
 
 #include "../base/Message.h"
 
-#include <iostream>
-
 using namespace SimpleDBus;
 
 ObjectManager::ObjectManager(Connection* conn, std::string service, std::string path)

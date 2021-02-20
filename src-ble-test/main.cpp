@@ -65,13 +65,21 @@ int main() {
     ble.setup(ble_events);
     ble.scan_timeout(SCAN_TIMEOUT_MS);
 
+    std::cout << devices.size() << " devices found:" << std::endl;
+
     for (int i = 0; i < devices.size(); i++) {
         std::cout << "  " << i << ": " << devices[i].name << " (" << devices[i].address << ")" << std::endl;
     }
 
     std::cout << "Type index of device to connect to: ";
+
     int device;
     std::cin >> device;
+
+    if (device >= devices.size()) {
+        std::cout << "Device index out of range." << std::endl;
+        exit(-1);
+    }
     
     ble.connect(devices[device].address);
 

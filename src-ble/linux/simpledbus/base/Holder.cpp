@@ -1,4 +1,5 @@
 #include "Holder.h"
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 
@@ -37,14 +38,10 @@ Holder& Holder::operator=(const Holder& other) {
                 this->holder_string = other.holder_string;
                 break;
             case ARRAY:
-                for (int i = 0; i < other.holder_array.size(); i++) {
-                    this->holder_array.push_back(other.holder_array[i]);
-                }
+                this->holder_array = other.holder_array;
                 break;
             case DICT:
-                for (auto& [key, value] : other.holder_dict) {
-                    this->holder_dict[key] = value;
-                }
+                this->holder_dict = other.holder_dict;
                 break;
         }
     }
@@ -110,15 +107,35 @@ std::vector<std::string> Holder::_represent_container() {
         case SIGNATURE:
             output_lines.push_back(_represent_simple());
             break;
-        case ARRAY:
+        case ARRAY: {
             output_lines.push_back("Array:");
-            for (int i = 0; i < holder_array.size(); i++) {
-                auto additional_lines = holder_array[i]._represent_container();
-                for (auto& line : additional_lines) {
-                    output_lines.push_back("  " + line);
+            std::vector<std::string> additional_lines;
+            if (holder_array.size() > 0 && holder_array[0]._type == BYTE) {
+                // Dealing with an array of bytes, use custom print functionality.
+                std::string temp_line = "";
+                for (int i = 0; i < holder_array.size(); i++) {
+                    // Represent each byte as a hex string
+                    std::stringstream stream;
+                    stream << std::setfill('0') << std::setw(2) << std::hex << ((int)holder_array[i].get_byte());
+                    temp_line += (stream.str() + " ");
+                    if ((i + 1) % 32 == 0) {
+                        additional_lines.push_back(temp_line);
+                        temp_line = "";
+                    }
+                }
+                additional_lines.push_back(temp_line);
+            } else {
+                for (int i = 0; i < holder_array.size(); i++) {
+                    for (auto& line : holder_array[i]._represent_container()) {
+                        additional_lines.push_back(line);
+                    }
                 }
             }
+            for (auto& line : additional_lines) {
+                output_lines.push_back("  " + line);
+            }
             break;
+        }
         case DICT:
             for (auto& [key, value] : holder_dict) {
                 output_lines.push_back(key);

@@ -63,7 +63,7 @@ void NativeBleInternal::scan_timeout(int32_t timeout_ms) {
     this->scan_stop();
 }
 
-bool NativeBleInternal::is_connected() { 
+bool NativeBleInternal::is_connected() {
     if (device != nullptr && device.ConnectionStatus() == BluetoothConnectionStatus::Connected) {
         return true;
     }
@@ -232,6 +232,10 @@ void NativeBleInternal::indicate(BluetoothUUID service_uuid, BluetoothUUID chara
                 });
         }
     }
+}
+
+void NativeBleInternal::unsubscribe(BluetoothUUID service_uuid, BluetoothUUID characteristic_uuid) {
+    // TODO: IMPLEMENT
 }
 
 void NativeBleInternal::disconnect_execute() {

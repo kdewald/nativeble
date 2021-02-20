@@ -1,6 +1,6 @@
 #pragma once
-#include <string>
 #include <functional>
+#include <string>
 
 #include "../base/Connection.h"
 #include "../base/Holder.h"
@@ -14,7 +14,7 @@ class Connection;
 class ObjectManager {
   private:
     const std::string _interface;
-    
+
     std::string _path;
     std::string _service;
     Connection* _conn;
@@ -27,7 +27,6 @@ class ObjectManager {
     Holder GetManagedObjects(bool use_callbacks = false);
     std::function<void(std::string path, Holder options)> InterfacesAdded;
     std::function<void(std::string path, Holder options)> InterfacesRemoved;
-
 
     bool process_received_signal(Message& message);
 };

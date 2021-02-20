@@ -1,12 +1,10 @@
 #include "BluezGattService.h"
 
-#include <iostream>
+#include "simpledbus/base/Logger.h"
 
 BluezGattService::BluezGattService(SimpleDBus::Connection* conn, std::string path,
                                    SimpleDBus::Holder managed_interfaces)
     : _conn(conn), _path(path), GattService1{conn, path}, Properties{conn, "org.bluez", path} {
-    // std::cout << "Creating BluezGattService: " << path << std::endl;
-
     Properties::PropertiesChanged = [&](std::string interface, SimpleDBus::Holder changed_properties,
                                         SimpleDBus::Holder invalidated_properties) {
         if (interface == "org.bluez.GattService1") {
@@ -21,9 +19,7 @@ BluezGattService::BluezGattService(SimpleDBus::Connection* conn, std::string pat
     }
 }
 
-BluezGattService::~BluezGattService() {
-    // std::cout << "Destroying BluezGattService" << std::endl;
-}
+BluezGattService::~BluezGattService() {}
 
 bool BluezGattService::process_received_signal(SimpleDBus::Message& message) {
     if (message.get_path() == _path) {
@@ -63,7 +59,21 @@ bool BluezGattService::add_path(std::string path, SimpleDBus::Holder options) {
     return false;
 }
 
-bool BluezGattService::remove_path(std::string path, SimpleDBus::Holder options) { return false; }
+bool BluezGattService::remove_path(std::string path, SimpleDBus::Holder options) {
+    int path_elements = std::count(path.begin(), path.end(), '/');
+    if (path.rfind(_path, 0) == 0) {
+        if (path_elements == 6) {
+            gatt_characteristics.erase(path);
+            return true;
+        } else {
+            // Propagate the paths downwards until someone claims it.
+            for (auto& [gatt_char_path, gatt_characteristic] : gatt_characteristics) {
+                if (gatt_characteristic->remove_path(path, options)) return true;
+            }
+        }
+    }
+    return false;
+}
 
 std::shared_ptr<BluezGattCharacteristic> BluezGattService::get_characteristic(std::string char_uuid) {
     std::shared_ptr<BluezGattCharacteristic> return_value = nullptr;

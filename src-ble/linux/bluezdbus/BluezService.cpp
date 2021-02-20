@@ -9,10 +9,7 @@ BluezService::BluezService() : conn(DBUS_BUS_SYSTEM), object_manager(&conn, "org
     };
 }
 
-BluezService::~BluezService() {
-    // std::cout << "Destroying BluezService" << std::endl;
-    conn.remove_match("type='signal',sender='org.bluez'");
-}
+BluezService::~BluezService() { conn.remove_match("type='signal',sender='org.bluez'"); }
 
 void BluezService::init() {
     conn.init();
@@ -22,18 +19,17 @@ void BluezService::init() {
 }
 
 void BluezService::run_async() {
-    SimpleDBus::Message message = conn.read_write_pop();
-    if (!message.is_valid()) {
-        return;
-    }
-
-    switch (message.get_type()) {
-        case SimpleDBus::MessageType::SIGNAL:
-            process_received_signal(message);
-            break;
-
-        default:
-            break;
+    conn.read_write();
+    SimpleDBus::Message message = conn.pop_message();
+    while (message.is_valid()) {
+        switch (message.get_type()) {
+            case SimpleDBus::MessageType::SIGNAL:
+                process_received_signal(message);
+                break;
+            default:
+                break;
+        }
+        message = conn.pop_message();
     }
 }
 
@@ -69,16 +65,30 @@ void BluezService::add_path(std::string path, SimpleDBus::Holder options) {
 }
 
 void BluezService::remove_path(std::string path, SimpleDBus::Holder options) {
-    // TODO: Do we need to notify the objects that they are being deleted?
     int path_elements = std::count(path.begin(), path.end(), '/');
 
     switch (path_elements) {
         case 2:
             break;
-        case 3:
-            // ! FIXME: There's the possibility that individual interfaces might get removed.
-            adapters.erase(path);
+        case 3: {
+            // HACK: Due to the library architecture, the only way to make sure if one
+            // of the underlying objects has to be deleted is to check if the options
+            // list contains `org.bluez.Adapter1`, `org.freedesktop.DBus.Introspectable`,
+            // or `org.freedesktop.DBus.Properties`.
+            // Eventually this structure will have to be revisited.
+            std::vector<std::string> interface_list;
+            for (auto& option : options.get_array()) {
+                interface_list.push_back(option.get_string());
+            }
+            bool must_erase = std::any_of(interface_list.begin(), interface_list.end(), [](const std::string& str) {
+                return str == "org.freedesktop.DBus.Properties" || str == "org.freedesktop.DBus.Introspectable" ||
+                       str == "org.bluez.Adapter1";
+            });
+            if (must_erase) {
+                adapters.erase(path);
+            }
             break;
+        }
         default:
             // Propagate the paths downwards until someone claims it.
             for (auto& [adapter_path, adapter] : adapters) {
@@ -90,10 +100,22 @@ void BluezService::remove_path(std::string path, SimpleDBus::Holder options) {
 
 std::shared_ptr<BluezAdapter> BluezService::get_first_adapter() {
     std::shared_ptr<BluezAdapter> return_value = nullptr;
-
     if (!adapters.empty()) {
         return_value = adapters.begin()->second;
     }
 
+    return return_value;
+}
+
+std::shared_ptr<BluezAdapter> BluezService::get_adapter(std::string adapter_name) {
+    std::shared_ptr<BluezAdapter> return_value = nullptr;
+    std::string expected_path = "/org/bluez/" + adapter_name;
+
+    for (auto& [adapter_path, adapter] : adapters) {
+        if (adapter_path == expected_path) {
+            return_value = adapter;
+            break;
+        }
+    }
     return return_value;
 }

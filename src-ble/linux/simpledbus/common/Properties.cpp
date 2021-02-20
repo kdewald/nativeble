@@ -53,7 +53,6 @@ void Properties::Set(std::string interface, std::string name, Holder value) {
 
 bool Properties::process_received_signal(Message& message) {
     if (message.get_path() == _path && message.is_signal(_interface, "PropertiesChanged")) {
-        // std::cout << message.to_string() << std::endl;
         Holder interface = message.extract();
         message.extract_next();
         Holder changed_properties = message.extract();

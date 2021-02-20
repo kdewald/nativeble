@@ -1,10 +1,11 @@
 #include "GattCharacteristic1.h"
 
-#include <iostream>
+#include "simpledbus/base/Logger.h"
 
-GattCharacteristic1::GattCharacteristic1(SimpleDBus::Connection* conn, std::string path) : _conn(conn), _path(path) {
-    // std::cout << "Creating org.bluez.GattCharacteristic1: " << path << std::endl;
-}
+const std::string GattCharacteristic1::_interface_name = "org.bluez.GattCharacteristic1";
+
+GattCharacteristic1::GattCharacteristic1(SimpleDBus::Connection* conn, std::string path)
+    : _conn(conn), _path(path), _notifying(false) {}
 
 GattCharacteristic1::~GattCharacteristic1() {}
 
@@ -14,12 +15,16 @@ void GattCharacteristic1::add_option(std::string option_name, SimpleDBus::Holder
     } else if (option_name == "Value") {
         _value.clear();
         auto value_array = value.get_array();
+        LOG_F(VERBOSE_2, "%s -> Value Length: %d", _path.c_str(), value_array.size());
         for (auto& elem : value_array) {
             _value.push_back(elem.get_byte());
         }
         if (ValueChanged) {
+            LOG_F(VERBOSE_2, "%s -> ValueChanged\n%s", _path.c_str(), value.represent().c_str());
             ValueChanged(_value);
         }
+    } else if (option_name == "Notifying") {
+        _notifying = value.get_boolean();
     }
 }
 
@@ -30,31 +35,35 @@ std::string GattCharacteristic1::get_uuid() { return _uuid; }
 std::vector<uint8_t> GattCharacteristic1::get_value() { return _value; }
 
 void GattCharacteristic1::StartNotify() {
-    // std::cout << "org.bluez.GattCharacteristic1 StartNotify" << std::endl;
-    auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, "org.bluez.GattCharacteristic1",
-                                                       "StartNotify");
-    _conn->send_with_reply_and_block(msg);
+    if (!_notifying) {
+        LOG_F(DEBUG, "%s -> StartNotify", _path.c_str());
+        auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, _interface_name, "StartNotify");
+        _conn->send_with_reply_and_block(msg);
+    } else {
+        LOG_F(WARN, "%s is already notifying...", _path.c_str());
+    }
 }
 void GattCharacteristic1::StopNotify() {
-    // std::cout << "org.bluez.GattCharacteristic1 StoptNotify" << std::endl;
-    auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, "org.bluez.GattCharacteristic1",
-                                                       "StopNotify");
-    _conn->send_with_reply_and_block(msg);
+    if (_notifying) {
+        LOG_F(DEBUG, "%s -> StopNotify", _path.c_str());
+        auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, _interface_name, "StopNotify");
+        _conn->send_with_reply_and_block(msg);
+    } else {
+        LOG_F(WARN, "%s was not notifying...", _path.c_str());
+    }
 }
 
 void GattCharacteristic1::WriteValue(SimpleDBus::Holder value, SimpleDBus::Holder options) {
-    // std::cout << "org.bluez.GattCharacteristic1 WriteValue" << std::endl;
-    auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, "org.bluez.GattCharacteristic1",
-                                                       "WriteValue");
+    LOG_F(DEBUG, "%s -> WriteValue", _path.c_str());
+    auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, _interface_name, "WriteValue");
     msg.append_argument(value, "ay");
     msg.append_argument(options, "a{sv}");
     _conn->send_with_reply_and_block(msg);
 }
 
 SimpleDBus::Holder GattCharacteristic1::ReadValue(SimpleDBus::Holder options) {
-    // std::cout << "org.bluez.GattCharacteristic1 ReadValue" << std::endl;
-    auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, "org.bluez.GattCharacteristic1",
-                                                       "ReadValue");
+    LOG_F(DEBUG, "%s -> ReadValue", _path.c_str());
+    auto msg = SimpleDBus::Message::create_method_call("org.bluez", _path, _interface_name, "ReadValue");
     msg.append_argument(options, "a{sv}");
     SimpleDBus::Message reply_msg = _conn->send_with_reply_and_block(msg);
     SimpleDBus::Holder value = reply_msg.extract();

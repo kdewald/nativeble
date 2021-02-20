@@ -1,19 +1,12 @@
 #include "BluezGattCharacteristic.h"
 
-#include <iostream>
+#include "simpledbus/base/Logger.h"
 
 BluezGattCharacteristic::BluezGattCharacteristic(SimpleDBus::Connection* conn, std::string path,
                                                  SimpleDBus::Holder managed_interfaces)
     : _conn(conn), _path(path), GattCharacteristic1{conn, path}, Properties{conn, "org.bluez", path} {
-    // std::cout << "Creating BluezGattCharacteristic: " << path << std::endl;
-
     Properties::PropertiesChanged = [&](std::string interface, SimpleDBus::Holder changed_properties,
                                         SimpleDBus::Holder invalidated_properties) {
-        // std::cout << "(" << _path << ") PropertiesChanged" << std::endl;
-        // std::cout << changed_properties.represent() << std::endl;
-        // std::cout << invalidated_properties.represent() << std::endl;
-        // // TODO: Handle the changed property.
-
         if (interface == "org.bluez.GattCharacteristic1") {
             GattCharacteristic1::set_options(changed_properties, invalidated_properties);
         } else {
@@ -33,7 +26,7 @@ BluezGattCharacteristic::~BluezGattCharacteristic() {
 bool BluezGattCharacteristic::process_received_signal(SimpleDBus::Message& message) {
     if (message.get_path() == _path) {
         if (Properties::process_received_signal(message)) return true;
-        std::cout << message.to_string() << std::endl;
+        // TODO: Add any remaining signal receivers.
     }
     return false;
 }
@@ -60,4 +53,7 @@ bool BluezGattCharacteristic::add_path(std::string path, SimpleDBus::Holder opti
     return false;
 }
 
-bool BluezGattCharacteristic::remove_path(std::string path, SimpleDBus::Holder options) { return false; }
+bool BluezGattCharacteristic::remove_path(std::string path, SimpleDBus::Holder options) {
+    LOG_F(DEBUG, "remove_path not implemented (%s needed to remove %s)", _path.c_str(), _path.c_str());
+    return false;
+}

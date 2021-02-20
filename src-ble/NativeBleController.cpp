@@ -50,6 +50,10 @@ void NativeBleController::indicate(BluetoothUUID service, BluetoothUUID characte
     internal->indicate(service, characteristic, callback_on_indicate);
 }
 
+void NativeBleController::unsubscribe(BluetoothUUID service, BluetoothUUID characteristic) {
+    internal->unsubscribe(service, characteristic);
+}
+
 void NativeBleController::disconnect() { internal->disconnect(); }
 
 void NativeBleController::dispose() { internal->dispose(); }

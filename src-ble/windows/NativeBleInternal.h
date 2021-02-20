@@ -27,7 +27,7 @@ class NativeBleInternal {
 
     void disconnect_execute();
 
-    BluetoothAddress format_mac_address(std::string); 
+    BluetoothAddress format_mac_address(std::string);
 
   public:
     NativeBleInternal(/* args */);
@@ -53,6 +53,8 @@ class NativeBleInternal {
                 std::function<void(const uint8_t *data, uint32_t length)> callback_on_notify);
     void indicate(BluetoothUUID service, BluetoothUUID characteristic,
                   std::function<void(const uint8_t *data, uint32_t length)> callback_on_indicate);
+
+    void unsubscribe(BluetoothUUID service, BluetoothUUID characteristic);
 
     void disconnect();
     void dispose();

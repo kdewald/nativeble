@@ -1,6 +1,6 @@
 #pragma once
-#include <string>
 #include <functional>
+#include <string>
 
 #include "../base/Connection.h"
 #include "../base/Holder.h"
@@ -14,7 +14,7 @@ class Connection;
 class Properties {
   private:
     const std::string _interface;
-    
+
     std::string _path;
     std::string _service;
     Connection* _conn;
@@ -28,7 +28,7 @@ class Properties {
     Holder GetAll(std::string interface);
     void Set(std::string interface, std::string name, Holder value);
 
-    std::function<void(std::string interface, Holder changed_properties, Holder invalidated_properties)> PropertiesChanged;
+    std::function<void(std::string interface, Holder changed, Holder invalidated)> PropertiesChanged;
 
     bool process_received_signal(Message& message);
 };

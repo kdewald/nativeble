@@ -7,11 +7,11 @@ CMAKE_BUILD_TYPE="Release"
 # Parse the received commands
 while :; do
     case $1 in
-        -c|--clean) FLAG_CLEAN="SET"            
+        -c|--clean) FLAG_CLEAN="SET"
         ;;
-        -d|--debug) 
+        -d|--debug)
         FLAG_DEBUG="-DDEFINE_DEBUG=ON"
-        CMAKE_BUILD_TYPE="Debug"            
+        CMAKE_BUILD_TYPE="Debug"
         ;;
         *) break
     esac
@@ -27,7 +27,7 @@ fi
 THREAD_COUNT=$(nproc --all)
 mkdir -p $PROJECT_ROOT/build/linux
 cd $PROJECT_ROOT/build/linux
-cmake -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE -B. -H$PROJECT_ROOT $FLAG_DEBUG
+cmake -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE -DOUTPUT_DIR=$PROJECT_ROOT/bin/linux -B. -H$PROJECT_ROOT $FLAG_DEBUG
 make -j$THREAD_COUNT
 cd $PROJECT_ROOT
 

@@ -29,4 +29,5 @@ class BluezService {
     void run_async();
 
     std::shared_ptr<BluezAdapter> get_first_adapter();
+    std::shared_ptr<BluezAdapter> get_adapter(std::string adapter_name);
 };

@@ -5,5 +5,5 @@
 
 #include "interfaces/PropertyHandler.h"
 
-#include "standard/ObjectManager.h"
-#include "standard/Properties.h"
+#include "common/ObjectManager.h"
+#include "common/Properties.h"

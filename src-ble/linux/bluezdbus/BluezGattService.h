@@ -6,8 +6,8 @@
 
 #include "BluezGattCharacteristic.h"
 
-#include <string>
 #include <memory>
+#include <string>
 
 class BluezGattService : public GattService1, public SimpleDBus::Properties {
   private:

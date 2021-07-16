@@ -1,6 +1,12 @@
 #import <CoreBluetooth/CoreBluetooth.h>
 #import <Foundation/Foundation.h>
 #import <functional>
+#include <chrono>
+#include <thread>
+#include <iostream>
+
+#define CENTRAL_MANAGER_TRIES 10
+#define CENTRAL_MANAGER_SLEEP 250
 
 @interface Macable:NSObject<CBCentralManagerDelegate, CBPeripheralDelegate>
 {
@@ -9,6 +15,7 @@
 }
 
 @property (readonly, getter=isPeripheralReady) BOOL peripheralReady;
+@property (readonly, getter=isCentralManagerPoweredOn) BOOL centralManagerPoweredOn;
 @property (strong) CBPeripheral *peripheral;
 @property std::function<void(CBPeripheral*, NSDictionary*, NSNumber*)> onScanFound;
 @property std::function<void()> onConnected;

@@ -8,6 +8,7 @@ int servicesCount;
 
     if (self) {
         _peripheralReady = NO;
+        _centralManagerPoweredOn = NO;
         _onScanFound = [](CBPeripheral*, NSDictionary*, NSNumber*) {};
         _onConnected = []() {};
         _onDisconnected = [](NSString*) {};
@@ -21,6 +22,15 @@ int servicesCount;
     dispatchQueue = dispatch_queue_create("CBqueue", DISPATCH_QUEUE_SERIAL);
     centralManager = [[CBCentralManager alloc]initWithDelegate:self queue:dispatchQueue];
     _peripheralReady = NO;
+    int tries = 0;
+    while (not _centralManagerPoweredOn){
+        tries++;
+        if (tries > CENTRAL_MANAGER_TRIES){
+            std::cerr << "CentralManager not powered on after " << CENTRAL_MANAGER_TRIES << " tries.\n";
+            break;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(CENTRAL_MANAGER_SLEEP));
+    }
 }
 
 -(void) startScan {
@@ -140,7 +150,16 @@ int servicesCount;
     self.onScanFound(device, advertisementData, RSSI);
 }
 
--(void) centralManagerDidUpdateState:(CBCentralManager*)central {}
+-(void) centralManagerDidUpdateState:(CBCentralManager*)central {
+    switch (central.state) {
+        case CBManagerStateUnknown:break;
+        case CBManagerStateResetting:break;
+        case CBManagerStateUnsupported:break;
+        case CBManagerStateUnauthorized:break;
+        case CBManagerStatePoweredOff:break;
+        case CBManagerStatePoweredOn: _centralManagerPoweredOn = YES; break;
+    }
+}
 
 -(void) centralManager:(CBCentralManager*)central didConnectPeripheral:(CBPeripheral*)device {
     [device discoverServices:nil];

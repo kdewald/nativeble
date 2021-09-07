@@ -1,3 +1,8 @@
+**IMPORTANT NOTICE**
+
+As of September 2021, NativeBLE will be deprecated and replaced by [SimpleBLE](https://github.com/OpenBluetoothToolbox/SimpleBLE). This is a new project that I've started
+that takes all the lessons learned from NativeBLE and makes it easier to use with far more functionality and stability.
+
 # NativeBLE
 
 The purpose of NativeBLE is to add full-fledged BLE capability without the need to worry about specific platform compatibility issues. The API is designed to work on Windows, Linux, and macOS and allows you to write the same code for all three platforms.
